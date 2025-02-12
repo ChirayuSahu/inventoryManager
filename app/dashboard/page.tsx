@@ -3,7 +3,7 @@ import { Dash } from '@/app/components/dash'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Dashboard - myApp",
+  title: "Dashboard - InvManager",
   description: "myApp Dashboard",
 };
 
