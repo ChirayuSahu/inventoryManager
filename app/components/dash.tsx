@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
-import { collection, auth, db, getDocs, where, query, updateDoc, deleteDoc, addDoc, doc } from '@/app/firebase/config';
+import { collection, auth, db, getDocs, updateDoc, deleteDoc, addDoc, doc } from '@/app/firebase/config';
 import { signOut, onAuthStateChanged, User } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 
@@ -46,7 +46,7 @@ export const Dash = () => {
         })
 
         return () => unsubscribe()
-    }, [auth, router])
+    }, [router])
 
     const handleLogout = async () => {
         try {

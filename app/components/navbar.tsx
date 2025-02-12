@@ -9,12 +9,10 @@ import Link from 'next/link'
 export const Navbar = () => {
 
     const [user,setUser]=useState<User | null>(null);
-    const [loading,setLoading]=useState(true);
 
     useEffect(()=>{
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             setUser(user);
-            setLoading(false);
         });
         return () => unsubscribe();
     },[])
@@ -30,15 +28,15 @@ export const Navbar = () => {
         <div className="bg-white">
             <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
                 <header className="flex items-center justify-between py-4 md:py-8">
-                    <a href="/" className="inline-flex items-center gap-2.5 text-2xl font-bold text-black md:text-3xl" aria-label="logo">
+                    <Link href="/" className="inline-flex items-center gap-2.5 text-2xl font-bold text-black md:text-3xl" aria-label="logo">
                         <svg width="95" height="94" viewBox="0 0 95 94" className="h-auto w-6 text-indigo-500" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                             <path d="M96 0V47L48 94H0V47L48 0H96Z" />
                         </svg>
                         InvManager
-                    </a>
+                    </Link>
 
                     <nav className="hidden gap-12 lg:flex">
-                        <a href="/" className="text-lg font-semibold text-gray-600 transition duration-100 hover:text-indigo-500 active:text-indigo-700">Home</a>
+                        <Link href="/" className="text-lg font-semibold text-gray-600 transition duration-100 hover:text-indigo-500 active:text-indigo-700">Home</Link>
                     </nav>
 
                     <div className="-ml-8 hidden flex-col gap-2.5 sm:flex-row sm:justify-center lg:flex lg:justify-start">
