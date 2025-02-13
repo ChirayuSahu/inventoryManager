@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react'
 import React from 'react'
 import {auth} from '@/app/firebase/config'
-import {User, onAuthStateChanged } from 'firebase/auth'
+import {User, onAuthStateChanged, signOut } from 'firebase/auth'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 export const Navbar = () => {
 
@@ -23,6 +24,17 @@ export const Navbar = () => {
         setIsMenuOpen((prev) => !prev);
     };
 
+    const router = useRouter();
+    
+    const handleLogout = async () => {
+        try{
+            await signOut(auth);
+            router.push("/sign-in");
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
 
     return (
         <div className="bg-white">
@@ -35,10 +47,16 @@ export const Navbar = () => {
                         InvManager
                     </Link>
 
-                    <div className="-ml-8 hidden flex-col gap-2.5 sm:flex-row sm:justify-center lg:flex lg:justify-start">\
-                    <Link href="/" className="inline-block rounded-lg bg-indigo-500 px-8 py-3 text-center text-sm font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-indigo-600 focus-visible:ring active:bg-indigo-700 md:text-base">
+                    <div className="-ml-8 hidden flex-col gap-2.5 sm:flex-row sm:justify-center lg:flex lg:justify-start">
+                        {user ? (
+                            <button onClick={handleLogout} className="inline-block rounded-lg bg-indigo-500 px-8 py-3 text-center text-sm font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-indigo-600 focus-visible:ring active:bg-indigo-700 md:text-base">
+                            Log Out
+                        </button>
+                        ):(
+                            <Link href="/" className="inline-block rounded-lg bg-indigo-500 px-8 py-3 text-center text-sm font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-indigo-600 focus-visible:ring active:bg-indigo-700 md:text-base">
                                 Home
                             </Link>
+                        )}
                         {user ? (
                             <Link href="/dashboard" className="inline-block rounded-lg bg-indigo-500 px-8 py-3 text-center text-sm font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-indigo-600 focus-visible:ring active:bg-indigo-700 md:text-base">
                                 Dashboard
