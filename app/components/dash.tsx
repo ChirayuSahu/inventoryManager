@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { collection, auth, db, getDocs, updateDoc, deleteDoc, addDoc, doc } from '@/app/firebase/config';
 import { signOut, onAuthStateChanged, User } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
+import { DashPreloader } from '@/app/components/dashPreloader';
 
 export const Dash = () => {
     const [user, setUser] = useState<User | null>(null)
@@ -95,7 +96,9 @@ export const Dash = () => {
     };
 
     if (loading) {
-        return <p>Loading...</p>
+        return (
+            <DashPreloader />
+        )
     }
 
     return (
