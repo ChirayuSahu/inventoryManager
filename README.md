@@ -1,5 +1,5 @@
 
-<img src="https://socialify.git.ci/ChirayuSahu/inventoryManager/image?font=Inter&language=1&name=1&owner=1&pattern=Plus&stargazers=1&theme=Dark" alt="inventoryManager" width="640" height="320" />
+<img src="https://socialify.git.ci/ChirayuSahu/inventoryManager/image?font=Inter&language=1&name=1&owner=1&pattern=Plus&stargazers=1&theme=Dark" alt="inventoryManager" height="320" />
 
 # Inventory Manager
 
