@@ -6,6 +6,7 @@ import { signOut, onAuthStateChanged, User } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { DashPreloader } from '@/app/components/dashPreloader';
 import useInventoryData from '../firebase/useInventoryData';
+import Image from 'next/image';
 
 export const Dash = () => {
     const [user, setUser] = useState<User | null>(null);
@@ -88,11 +89,13 @@ export const Dash = () => {
                 <div className="flex flex-col items-center rounded-lg bg-gray-100 p-4 sm:p-8 lg:flex-row lg:justify-between">
                     <div className="flex items-center gap-4 mb-4 sm:mb-8 lg:mb-0">
                         {user?.photoURL && (
-                            <img
-                                src={user.photoURL}
-                                alt="User Profile"
-                                className="w-12 h-12 rounded-full border-2 border-indigo-500"
-                            />
+                            <Image
+                            src={user.photoURL}
+                            alt="User Profile"
+                            width={48} // Width in pixels (equivalent to 12 in tailwind's w-12)
+                            height={48} // Height in pixels (equivalent to 12 in tailwind's h-12)
+                            className="rounded-full border-2 border-indigo-500"
+                        />
                         )}
                         <div>
                             <h2 className="text-center text-xl font-bold text-indigo-500 sm:text-2xl lg:text-left lg:text-3xl">
