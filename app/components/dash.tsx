@@ -1,62 +1,48 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
-import { collection, auth, db, getDocs, updateDoc, deleteDoc, addDoc, doc } from '@/app/firebase/config';
+import { collection, auth, db, updateDoc, deleteDoc, addDoc, doc } from '@/app/firebase/config';
 import { signOut, onAuthStateChanged, User } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { DashPreloader } from '@/app/components/dashPreloader';
+import useInventoryData from '../firebase/useInventoryData';
 
 export const Dash = () => {
-    const [user, setUser] = useState<User | null>(null)
-    const [loading, setLoading] = useState(true)
+    const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
     const [name, setName] = useState('');
     const [quantity, setQuantity] = useState('');
-    const [products, setProducts] = useState<{ id: string; name: string; quantity: string }[]>([]);
-    const [searchTerm, setSearchTerm] = useState('')
-    const router = useRouter()
+    const [searchTerm, setSearchTerm] = useState('');
+    const router = useRouter();
 
-    const fetchProducts = async (uid: string, searchTerm: string = '') => {
-        const productsCollection = collection(db, 'users', uid, 'products');
-        const productSnapshot = await getDocs(productsCollection);
+    const inventory = useInventoryData();
 
-        const productList = productSnapshot.docs.map(doc => {
-            const data = doc.data();
-            return {
-                id: doc.id,
-                name: data.name,
-                quantity: data.quantity
-            };
-        });
 
-        const filteredProducts = productList.filter(product =>
-            product.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-
-        setProducts(filteredProducts);
-    };
+    const filteredProducts = inventory.filter(product =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
-                setUser(user)
-                fetchProducts(user.uid)
+                setUser(user);
             } else {
-                router.push('/sign-in')
+                router.push('/sign-in');
             }
-            setLoading(false)
-        })
+            setLoading(false);
+        });
 
-        return () => unsubscribe()
-    }, [router])
+        return () => unsubscribe();
+    }, [router]);
 
     const handleLogout = async () => {
         try {
-            await signOut(auth)
-            router.push('/sign-in')
+            await signOut(auth);
+            router.push('/sign-in');
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
-    }
+    };
 
     const handleCreate = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -65,7 +51,7 @@ export const Dash = () => {
             return;
         }
         if (user) {
-            const productRef = collection(db, 'users', user?.uid, 'products');
+            const productRef = collection(db, 'users', user.uid, 'products');
             await addDoc(productRef, {
                 name,
                 quantity,
@@ -73,32 +59,27 @@ export const Dash = () => {
             });
             setName('');
             setQuantity('');
-            fetchProducts(user?.uid);
         }
     };
 
     const handleUpdate = async (id: string) => {
         const newQuantity = prompt('Enter the new quantity:');
         if (newQuantity && user) {
-            const productRef = doc(db, 'users', user?.uid, 'products', id);
+            const productRef = doc(db, 'users', user.uid, 'products', id);
             await updateDoc(productRef, { quantity: newQuantity });
-            fetchProducts(user?.uid);
         }
     };
 
     const handleDelete = async (id: string) => {
         const confirmDelete = window.confirm('Are you sure you want to delete this product?');
         if (confirmDelete && user) {
-            const productRef = doc(db, 'users', user?.uid, 'products', id);
+            const productRef = doc(db, 'users', user.uid, 'products', id);
             await deleteDoc(productRef);
-            fetchProducts(user?.uid);
         }
     };
 
     if (loading) {
-        return (
-            <DashPreloader />
-        )
+        return <DashPreloader />;
     }
 
     return (
@@ -130,7 +111,6 @@ export const Dash = () => {
                     </div>
                 </div>
             </div>
-
 
             <div className="py-8 px-4 md:px-8">
                 <form onSubmit={handleCreate} className="mx-auto max-w-lg rounded-lg border p-8">
@@ -166,26 +146,22 @@ export const Dash = () => {
                     </div>
                 </form>
             </div>
-                    
 
             <div className="p-4 sm:p-8 mb-4 mx-auto max-w-screen-2xl px-4 md:px-8">
                 <h3 className="text-2xl font-bold text-center text-indigo-500 mb-4">Inventory List</h3>
 
                 <div className="mb-4 mx-auto max-w-screen-2xl">
-                <input
-                    type="text"
-                    placeholder="Search for a product"
-                    value={searchTerm}
-                    onChange={(e) => {
-                        setSearchTerm(e.target.value);
-                        if (user) fetchProducts(user.uid, e.target.value);
-                    }}
-                    className="w-full rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 focus:ring"
-                />
-            </div>
+                    <input
+                        type="text"
+                        placeholder="Search for a product"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 focus:ring"
+                    />
+                </div>
 
                 <div className="space-y-4">
-                    {products.map((product) => (
+                    {filteredProducts.map((product) => (
                         <div key={product.id} className="flex justify-between items-center p-4 bg-gray-100 rounded-lg">
                             <div>
                                 <p className="text-lg font-semibold text-gray-800">{product.name}</p>
